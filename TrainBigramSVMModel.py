@@ -23,7 +23,6 @@ def preprocess_reviews(reviews):
     stemmedReviews = get_stemmed_text(removedStopWordsReviews)
     lemmatizedReviews = get_lemmatized_text(stemmedReviews)
     
-    
     return lemmatizedReviews
 
 def remove_spaces(reviews):
@@ -78,14 +77,16 @@ reviews_test_clean = preprocess_reviews(reviews_test)
 #reviews_train[0]
 #reviews_train_clean[0]
 
+cleaned_train_reviews = remove_spaces(reviews_train)
+cleaned_test_reviews = remove_spaces(reviews_test)
 
 from sklearn.feature_extraction.text import CountVectorizer
-
+english_stop_words = ['in', 'of', 'at', 'a', 'the']
 ngram_vectorizer = CountVectorizer(binary=True, ngram_range=(1, 2), stop_words=english_stop_words)
-ngram_vectorizer.fit(reviews_train_clean)
-X = ngram_vectorizer.transform(reviews_train_clean)
-#print(X)
-testData = ngram_vectorizer.transform(reviews_test_clean)
+ngram_vectorizer.fit(cleaned_train_reviews)
+X = ngram_vectorizer.transform(cleaned_train_reviews)
+print(X)
+testData = ngram_vectorizer.transform(cleaned_test_reviews)
 
 from sklearn.svm import LinearSVC
 
@@ -103,13 +104,13 @@ for c in [0.001, 0.005, 0.01, 0.05, 0.1]:
     svm = LinearSVC(C=c)
     svm.fit(X_train, Y_train)
     print ("Accuracy for C={} is: {}".format(c, accuracy_score(Y_test, svm.predict(X_test))))
-"""
-# Accuracy for C=0.001 is: 0.88112
-# Accuracy for C=0.005 is: 0.88672
-# Accuracy for C=0.01 is: 0.88624
-# Accuracy for C=0.05 is: 0.88016
-# Accuracy for C=0.1 is: 0.87904
-"""  
+
+#Accuracy for C=0.001 is: 0.88784
+#Accuracy for C=0.005 is: 0.89536
+#Accuracy for C=0.01 is: 0.89664
+#Accuracy for C=0.05 is: 0.89536
+#Accuracy for C=0.1 is: 0.89472
+  
 
 """ As we can see our models gives best output when C=0.01. So, now we will train our final model 
 and store it on disk. we used testData to test our model which contains 25000 data. and we used 
@@ -119,11 +120,12 @@ import pickle
 final_model = LinearSVC(C=0.01)
 final_model.fit(X, target)
 print ("Final Accuracy: {}".format(accuracy_score(target, final_model.predict(testData))))
-# Final Accuracy: 0.88828
+# Final Accuracy: 0.89932
 
+#print(final_model.predict(testData[12500]))
 # save the model to disk
 pickle.dump(final_model, open("Trained Models/BigramSVMModel.pickle", 'wb'))
-
+pickle.dump(ngram_vectorizer, open("Trained Models/NgramVectorizer.pickle", 'wb'))
 
 """
 Following line of code is used to print most 5 discriminating words for both positive and negative
@@ -141,19 +143,19 @@ for best_positive in sorted(
     reverse=True)[:5]:
     print (best_positive)
  
-#('excel', 0.30280007990862573)
-#('perfect', 0.23992931361504005)
-#('must see', 0.21659807802331918)
-#('superb', 0.20160737404605225)
-#('favorit', 0.19290568228017965)
+#('excellent', 0.25133265056494947)
+#('perfect', 0.2079056060648513)
+#('enjoyable', 0.17770494361963365)
+#('great', 0.17637919636269825)
+#('superb', 0.1721956091038049)
     
 for best_negative in sorted(
     feature_to_coef.items(), 
     key=lambda x: x[1])[:5]:
     print (best_negative)
     
-#('worst', -0.4002560986194035)
-#('aw', -0.33500300720058107)
-#('wast', -0.30855990192910854)
-#('bore', -0.2945924480803718)
-#('poorli', -0.2624385262708666)
+#('worst', -0.3919712028141236)
+#('awful', -0.29275354988532176)
+#('waste', -0.2734712281992666)
+#('boring', -0.2668359250322605)
+#('disappointment', -0.22879492642804902)

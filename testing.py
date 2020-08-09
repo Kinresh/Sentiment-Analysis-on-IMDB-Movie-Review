@@ -65,8 +65,8 @@ reviews_train_clean = preprocess_reviews(reviews_train)
 reviews_test_clean = preprocess_reviews(reviews_test)
 
 #by following two lines you can compare old review and new preprocessed review
-#reviews_train[0]
-#reviews_train_clean[0]
+reviews_train[0]
+reviews_train_clean[0]
 
 #load stop words of English language in english_stop_words
 english_stop_words = stopwords.words('english')
@@ -74,14 +74,19 @@ english_stop_words = stopwords.words('english')
 #remove stop words
 no_stop_words_train = remove_stop_words(reviews_train_clean)
 no_stop_words_test = remove_stop_words(reviews_test_clean)
+reviews_train_clean[0]
+no_stop_words_train[0]
 
 #perform stemming operations
 stemmed_reviews_train = get_stemmed_text(no_stop_words_train)
 stemmed_reviews_test = get_stemmed_text(no_stop_words_test)
-
+reviews_train_clean[0]
+stemmed_reviews_train[0]
 #perform lemmatization operations
 lemmatized_reviews_train = get_lemmatized_text(stemmed_reviews_train)
 lemmatized_reviews_test = get_lemmatized_text(stemmed_reviews_test)
+reviews_train_clean[0]
+lemmatized_reviews_train[0]
 
 from sklearn.feature_extraction.text import CountVectorizer
 

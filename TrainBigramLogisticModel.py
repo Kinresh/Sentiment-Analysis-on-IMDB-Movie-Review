@@ -79,16 +79,18 @@ reviews_test_clean = preprocess_reviews(reviews_test)
 #reviews_train[0]
 #reviews_train_clean[0]
 
+cleaned_train_reviews = remove_spaces(reviews_train)
+cleaned_test_reviews = remove_spaces(reviews_test)
 
 from sklearn.feature_extraction.text import CountVectorizer
+english_stop_words = ['in', 'of', 'at', 'a', 'the']
+cv = CountVectorizer(binary=True, ngram_range=(1,2),stop_words=english_stop_words)
 
-cv = CountVectorizer(binary=True, ngram_range=(1,2))
-
-cv.fit(reviews_train_clean)
-X = cv.transform(reviews_train_clean)
+cv.fit(cleaned_train_reviews)
+X = cv.transform(cleaned_train_reviews)
 #print(X)
 
-testData = cv.transform(reviews_test_clean)
+testData = cv.transform(cleaned_train_reviews)
 #print(X_test)
 
 from sklearn.linear_model import LogisticRegression
@@ -108,11 +110,11 @@ for c in [0.01, 0.05, 0.25, 0.5, 1]:
     lr.fit(X_train, Y_train)
     print ("Accuracy for C={} is: {}".format(c, accuracy_score(Y_test, lr.predict(X_test))))
 """
-# Accuracy for C=0.01 is: 0.8848
-# Accuracy for C=0.05 is: 0.89088
-# Accuracy for C=0.25 is: 0.89408
-# Accuracy for C=0.5 is: 0.89376
-# Accuracy for C=1 is: 0.89504
+# Accuracy for C=0.01 is: 0.88176
+# Accuracy for C=0.05 is: 0.89072
+# Accuracy for C=0.25 is: 0.89248
+# Accuracy for C=0.5 is: 0.8928
+# Accuracy for C=1 is: 0.89232
 """  
 
 """ As we can see our models gives best output when C=0.25. So, now we will train our final model 
@@ -126,7 +128,8 @@ print ("Final Accuracy: {}".format(accuracy_score(target, final_model.predict(te
 # Final Accuracy: 0.88768
 
 # save the model to disk
-pickle.dump(final_model, open("Trained Models/TrigramLogisticRegressionModel.pickle", 'wb'))
+pickle.dump(final_model, open("Trained Models/TrigramLogisticRegressionModel1.pickle", 'wb'))
+pickle.dump(cv, open("Trained Models/NgramVectorizerForLogReg.pickle", 'wb'))
 
 
 """
@@ -145,33 +148,19 @@ for best_positive in sorted(
     reverse=True)[:5]:
     print (best_positive)
  
-# ('excellent', 0.9283544469627338)
-# ('perfect', 0.7944277305707411)
-# ('great', 0.6745553541531837)
-# ('amazing', 0.616483443071529)
-# ('superb', 0.6055919907707555)
-
-#performed on prerocessed data
-#('excel', 0.964613913036903)
-#('perfect', 0.7867168529442637)
-#('favorit', 0.7235935391494341)
-#('great', 0.6512428082239494)
-#('refresh', 0.6342817084687836)
+#('excellent', 1.0988693046514135)
+#('perfect', 0.9562672619552016)
+#('great', 0.7874557862560437)
+#('wonderful', 0.7486309297928394)
+#('amazing', 0.7400040992077391)
     
 for best_negative in sorted(
     feature_to_coef.items(), 
     key=lambda x: x[1])[:5]:
     print (best_negative)
     
-#('worst', -1.3679897443734297)s
-#('waste', -1.1688809030844334)
-#('awful', -1.027333731248613)
-#('poorly', -0.8748022422515095)
-#('boring', -0.8591220947253395)
-
-#performed on preprocessed data
-#('worst', -1.3313788121464283)
-#('wast', -1.1596221555072288)
-#('aw', -1.0687902368861595)
-#('poorli', -0.8928018533744122)
-#('bore', -0.8299331614970463)
+#('worst', -1.6818645037605657)
+#('awful', -1.2421645782842832)
+#('waste', -1.1723636271742857)
+#('boring', -1.1476749019433679)
+#('bad', -0.9709188798908562)
