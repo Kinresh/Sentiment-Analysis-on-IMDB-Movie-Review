@@ -79,18 +79,15 @@ reviews_test_clean = preprocess_reviews(reviews_test)
 #reviews_train[0]
 #reviews_train_clean[0]
 
-cleaned_train_reviews = remove_spaces(reviews_train)
-cleaned_test_reviews = remove_spaces(reviews_test)
-
 from sklearn.feature_extraction.text import CountVectorizer
 english_stop_words = ['in', 'of', 'at', 'a', 'the']
 cv = CountVectorizer(binary=True, ngram_range=(1,2),stop_words=english_stop_words)
 
-cv.fit(cleaned_train_reviews)
-X = cv.transform(cleaned_train_reviews)
+cv.fit(reviews_train_clean)
+X = cv.transform(reviews_train_clean)
 #print(X)
 
-testData = cv.transform(cleaned_train_reviews)
+testData = cv.transform(reviews_test_clean)
 #print(X_test)
 
 from sklearn.linear_model import LogisticRegression

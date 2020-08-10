@@ -33,7 +33,7 @@ def remove_stop_words(reviews):
     return removed_stop_words
 
 while(1):
-    print("Enter a movie review: ")
+    print("\nEnter a movie review: ")
     entered_review = input();
     
     entered_review= entered_review.split("\n")
@@ -51,6 +51,6 @@ while(1):
         temp="Negative"
     
     
-    print("\n suggested sentiment of entered review is: ",temp)
+    print("\nsuggested sentiment of entered review is: ",temp)
     
     #print("\n suggested sentiment of entered review is: ",trained_model.predict(vectorized_review))

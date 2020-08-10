@@ -85,7 +85,7 @@ english_stop_words = ['in', 'of', 'at', 'a', 'the']
 ngram_vectorizer = CountVectorizer(binary=True, ngram_range=(1, 2), stop_words=english_stop_words)
 ngram_vectorizer.fit(cleaned_train_reviews)
 X = ngram_vectorizer.transform(cleaned_train_reviews)
-print(X)
+#print(X)
 testData = ngram_vectorizer.transform(cleaned_test_reviews)
 
 from sklearn.svm import LinearSVC
